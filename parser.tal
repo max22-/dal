@@ -1,4 +1,5 @@
-
+( Macros )
+%BREAKPOINT { #01 .System/debug DEO }
 ( Types )
 %LIST { #00 }
 %CHARACTER { #01 }
@@ -11,26 +12,49 @@
 |10 @Console    &vector $2 &read     $1 &pad    $5 &write  $1 &error  $1
 
 
-|0400 @NODES ( max number of nodes in a tree )
+%MAX_TREE_SIZE { $1400 } ( -- 1024 nodes of 5 bytes each )
+
+|00 @node &data $2 &type $1 &parent $2 &node-length
+|00 @tree &node-count $2 &nodes
 
 |0100
 
-;program print-string
-;program string-to-tree
+( ;program print-string )
+;program ;tree1 string-to-tree
+;tree1 #0000 print-node
 BRK
 
-@string-to-tree ( str* -- )
-    #0000 ;node-count STA2
-    #00 LIST #0000 add-node
+@string-to-tree ( str* tree* -- )
+    STH2k reset-tree
+    ( BREAKPOINT )
+    #0000 LIST #0000 STH2kr add-node
     LDAk DUP #00 EQU ?&end
-    CHARACTER #0000 
+    #00 SWP ( transform char into short ) CHARACTER #0000 STH2kr add-node
     &end
+    POP2r
     JMP2r
 
-@add-node ( data type parent* -- )
-    ;parent ;node-count LDA2 ADD2 STA2
-    ;type ;node-count LDA2 ADD2 STA
-    ;data ;node-count LDA2 ADD2 STA
+@reset-tree ( tree* -- )
+    #0000 SWP2 ;tree/node-count ADD2 STA2
+    JMP2r
+
+@add-node ( data* type parent* tree* -- )
+    STH2k
+    DUP2 ;tree/node-count ADD2 LDA2 get-node
+    ( data* type parent* node-address -- )
+    STH2k
+    ;node/parent ADD2 STA2
+    STH2kr
+    ;node/type ADD2 STA
+    STH2kr
+    ;node/data ADD2 STA2
+    POP2r
+    ( BREAKPOINT )
+    STH2r DUP2 ;tree/node-count ADD2 LDA2 INC2 SWP2 ;tree/node-count ADD2 STA2
+    JMP2r
+
+@get-node ( tree* node-id* -- node-address* )
+    ;node/node-length MUL2 ;tree/nodes ADD2 ADD2
     JMP2r
 
 @print-tree ( -- )
@@ -38,10 +62,11 @@ BRK
     JMP2r
     &indent 20 20 20 20 $1
 
-@print-node ( node-number* -- )
-    ;type ADD2 LDA
-    DUP LIST NEQ? ?&not-list 
-    ( print "LIST" )
+@print-node ( tree* node-number* -- )
+    BREAKPOINT
+    get-node ;node/type ADD2 LDA
+    DUP LIST NEQ ?&not-list 
+    ;list-str print-string
     !&end JMP
 
     &not-list
@@ -50,12 +75,10 @@ BRK
     JMP2r
 
 @program
-    "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- "fac "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
+    "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- 20 "fac 20 "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
 @indent 20 20 20 20 $1
+@list-str "LIST $1
 
-@parent $0800
-@data $NODES
-@type $NODES
-@node-count $2
+@tree1 MAX_TREE_SIZE
 
 ~helpers.tal
