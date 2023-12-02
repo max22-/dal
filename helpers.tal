@@ -1,0 +1,7 @@
+@print-string ( string* -- )
+	LDAk ,&not-end JCN
+	POP2 JMP2r
+	&not-end
+	LDAk .Console/write DEO
+	INC2
+	,print-string JMP

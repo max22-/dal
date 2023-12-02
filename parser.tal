@@ -1,0 +1,61 @@
+
+( Types )
+%LIST { #00 }
+%CHARACTER { #01 }
+%LEFT_BRACKET { #02 }
+%RIGHT_BRACKET { #03 }
+%INTEGER { #04 }
+%WORD { #05 }
+
+|00 @System     &vector $2 &wst      $1 &rst    $1 &eaddr  $2 &ecode  $1 &pad     $1 &r       $2 &g      $2 &b     $2 &debug  $1 &halt $1
+|10 @Console    &vector $2 &read     $1 &pad    $5 &write  $1 &error  $1
+
+
+|0400 @NODES ( max number of nodes in a tree )
+
+|0100
+
+;program print-string
+;program string-to-tree
+BRK
+
+@string-to-tree ( str* -- )
+    #0000 ;node-count STA2
+    #00 LIST #0000 add-node
+    LDAk DUP #00 EQU ?&end
+    CHARACTER #0000 
+    &end
+    JMP2r
+
+@add-node ( data type parent* -- )
+    ;parent ;node-count LDA2 ADD2 STA2
+    ;type ;node-count LDA2 ADD2 STA
+    ;data ;node-count LDA2 ADD2 STA
+    JMP2r
+
+@print-tree ( -- )
+
+    JMP2r
+    &indent 20 20 20 20 $1
+
+@print-node ( node-number* -- )
+    ;type ADD2 LDA
+    DUP LIST NEQ? ?&not-list 
+    ( print "LIST" )
+    !&end JMP
+
+    &not-list
+
+    &end
+    JMP2r
+
+@program
+    "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- "fac "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
+@indent 20 20 20 20 $1
+
+@parent $0800
+@data $NODES
+@type $NODES
+@node-count $2
+
+~helpers.tal
