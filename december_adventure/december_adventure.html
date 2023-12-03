@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <title>December Adventure</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="">
+<body>
+
+<h1>December Adventure</h1>
+<p>The goal is to write a little piece of code every day in december. See <a href="https://eli.li/december-adventure">here</a>.</p>
+
+<p>Mine is to experiment a way of representing trees that i learnt in this talk by Aaron Hsu : <a href="https://www.youtube.com/watch?v=hzPd3umu78g">Dyalog '18: High-performance Tree Wrangling, the APL Way</a>. 
+The APL language is used in this video, but it is accessible even if you don't know it (which is my case, i only played a tiny little bit on tryapl.org). The key idea is to represent a tree as a 1-dimensional array of nodes,
+each node contains its data, a reference to its parent (and eventually one to its left sibling).</p>
+<p>At the end of the talk i was thinking "what about parsing ? it would be neat if we could do it the same say", 
+and a couple of days ago, i've stumbled upon this talk, by Aaron Hsu again : <a href="https://www.youtube.com/watch?v=5I4YPkVU7mY">Text Processing in APL // Aaron Hsu // Dyalog '22</a>.
+It's very interesting and completely different from other parsing techniques. This <a href="https://youtu.be/5I4YPkVU7mY?t=692">section</a> is my preferred part of the talk. He explains that no recursion is used :
+instead of a call stack, the AST being built is used as a "reified" stack, and it becomes also easy to do good error reporting. (mind blown). I've watched this section several times. Not sure i've understood everything yet.</p>
+<p>I've tried a little bit in C, but for the December Adventure i'll give it a try with <a href="https://wiki.xxiivv.com/site/uxntal.html">uxntal</a>. I am not very good at uxntal, it will be an opportunity to get a little bit better.
+I really don't know what I am doing, but i think it will be fun.</p>
+
+
+
+<h2> 01/12 and 02/12 </h2>
+<p>
+I've tried several times to write a little language inspired by <a href="https://en.wikipedia.org/wiki/Joy_(programming_language)">Joy</a>. I'll try to parse that : <br>
+<code>[dup 0 = [1 drop] [dup 1 - fac *] ifte] ' fac def</code>
+</p>
+
+<p>So i've set up a uxntal skeleton. Hardcoded that line of code. The idea of the parsing technique of Aaron Hsu is that a string can be thought of a tree where each character is a tiny little branch 
+(and then multiple passes refine the structure of the tree).
+Then i've implemented a function to add nodes to a tree, and another to transform a string into a tree. Tonight i've started writing another to display a node, which is not finished yet. 
+<a href="https://git.sr.ht/~rabbits/beetbug">Beetbug</a> was very useful :) </p>
+
+</body>
+</html> 
