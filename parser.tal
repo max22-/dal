@@ -19,18 +19,19 @@
 
 |0100
 
-( ;program print-string )
-;program ;tree1 string-to-tree
-;tree1 #0000 print-node
-BRK
+    ;program print-string
+    ;program ;tree1 string-to-tree
+    ;tree1 print-tree
+    BRK
 
 @string-to-tree ( str* tree* -- )
     STH2k reset-tree
-    ( BREAKPOINT )
     #0000 LIST #0000 STH2kr add-node
-    LDAk DUP #00 EQU ?&end
+    &loop LDAk DUP #00 EQU ?&end
     #00 SWP ( transform char into short ) CHARACTER #0000 STH2kr add-node
+    INC2 !&loop
     &end
+    POP2
     POP2r
     JMP2r
 
@@ -40,7 +41,7 @@ BRK
 
 @add-node ( data* type parent* tree* -- )
     STH2k
-    DUP2 ;tree/node-count ADD2 LDA2 get-node
+    DUP2 get-node-count get-node
     ( data* type parent* node-address -- )
     STH2k
     ;node/parent ADD2 STA2
@@ -49,34 +50,96 @@ BRK
     STH2kr
     ;node/data ADD2 STA2
     POP2r
-    ( BREAKPOINT )
-    STH2r DUP2 ;tree/node-count ADD2 LDA2 INC2 SWP2 ;tree/node-count ADD2 STA2
+    STH2kr get-node-count INC2 STH2r ;tree/node-count ADD2 STA2
     JMP2r
 
 @get-node ( tree* node-id* -- node-address* )
     ;node/node-length MUL2 ;tree/nodes ADD2 ADD2
     JMP2r
 
-@print-tree ( -- )
-
+@get-node-data ( tree* node-id* -- node-data* )
+    get-node ;node/data ADD2 LDA2
     JMP2r
-    &indent 20 20 20 20 $1
+
+@get-node-type ( tree* node-id* -- node-type )
+    get-node ;node/type ADD2 LDA
+    JMP2r
+
+@get-node-parent ( tree* node-id* -- node-parent* )
+    get-node ;node/data ADD2 LDA2
+    JMP2r
+
+@get-node-count ( tree* -- node-count* )
+    ;tree/node-count ADD2 LDA2
+    JMP2r
+
+@get-node-depth ( *tree *node-id -- depth* )
+    SWP2 ,&tree STR2
+    #0000 ,&counter STR2
+    
+    ( node-id* -- )
+    &loop
+    DUP2 LIT2 &tree $2 SWP2 get-node-parent
+    ( old-node-id* node-id* -- )
+    DUP2 ROT2 EQU2 ?&end
+    ,&counter LDR2 INC2 ,&counter STR2
+    &end
+    POP2
+    ,&counter LDR2
+    JMP2r
+    &counter 0000
+
+@indent ( depth* -- )
+    &loop
+    DUP2 #0000 EQU2 ?&end
+    ;&indent-str print-string
+    #ffff ADD2
+    !&loop
+    &end
+    POP2
+    JMP2r
+    &indent-str 20 20 20 20 $1
+    
+
+@print-tree ( tree* -- )
+    STH2k
+    get-node-count DUP2 print-short-decimal ;&nodes-msg print-string
+    ( node-count* -- )
+    ,&node-count STR2
+    #0000
+    &loop
+    DUP2 LIT2 &node-count $2 EQU2 ?&end
+    STH2kr OVR2 get-node-depth indent
+    STH2kr OVR2 print-node #0a #18 DEO
+    INC2 !&loop
+    &end
+    POP2
+    POP2r
+    JMP2r
+    &nodes-msg 20 "nodes 0a $1
 
 @print-node ( tree* node-number* -- )
-    BREAKPOINT
-    get-node ;node/type ADD2 LDA
+    ( BREAKPOINT )
+    STH2 STH2 STH2kr SWP2r STH2kr SWP2r ( make a copy of the arguments on the return stack )
+    get-node-type
+
     DUP LIST NEQ ?&not-list 
     ;list-str print-string
     !&end JMP
-
     &not-list
 
+    DUP CHARACTER NEQ ?&not-char
+    STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
+    get-node-data SWP POP .Console/write DEO
+    &not-char
+
     &end
+    POP ( pop node type )
+    POP2r POP2r ( pop the stashed tree* and node-number* arguments )
     JMP2r
 
 @program
     "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- 20 "fac 20 "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
-@indent 20 20 20 20 $1
 @list-str "LIST $1
 
 @tree1 MAX_TREE_SIZE
