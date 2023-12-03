@@ -3,15 +3,31 @@
     <meta charset="UTF-8">
     <title>December Adventure</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="/reset.css">
+    <style>
+        body {
+            padding: 1rem;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+        article,
+        header {
+            max-width: 70ch;
+            margin: auto;
+        }
+        article > * + * {
+            margin-top: 1rem;
+        }
+    </style>
 <body>
 
+<header>
 <h1>December Adventure</h1>
 <p>The goal is to write a little piece of code every day in december. See <a href="https://eli.li/december-adventure">here</a>.</p>
 
 <p>Mine is to experiment a way of representing trees that i learnt in this talk by Aaron Hsu : <a href="https://www.youtube.com/watch?v=hzPd3umu78g">Dyalog '18: High-performance Tree Wrangling, the APL Way</a>. 
 The APL language is used in this video, but it is accessible even if you don't know it (which is my case, i only played a tiny little bit on tryapl.org). The key idea is to represent a tree as a 1-dimensional array of nodes,
-each node contains its data, a reference to its parent (and eventually one to its left sibling).</p>
+each node contains its data, and a reference to its parent (and eventually one to its left sibling).</p>
 <p>At the end of the talk i was thinking "what about parsing ? it would be neat if we could do it the same say", 
 and a couple of days ago, i've stumbled upon this talk, by Aaron Hsu again : <a href="https://www.youtube.com/watch?v=5I4YPkVU7mY">Text Processing in APL // Aaron Hsu // Dyalog '22</a>.
 It's very interesting and completely different from other parsing techniques. This <a href="https://youtu.be/5I4YPkVU7mY?t=692">section</a> is my preferred part of the talk. He explains that no recursion is used :
@@ -19,8 +35,9 @@ instead of a call stack, the AST being built is used as a "reified" stack, and i
 <p>I've tried a little bit in C, but for the December Adventure i'll give it a try with <a href="https://wiki.xxiivv.com/site/uxntal.html">uxntal</a>. I am not very good at uxntal, it will be an opportunity to get a little bit better.
 I really don't know what I am doing, but i think it will be fun.</p>
 
-
-
+</header>
+<main>
+<article>
 <h2> 01/12 and 02/12 </h2>
 <p>
 I've tried several times to write a little language inspired by <a href="https://en.wikipedia.org/wiki/Joy_(programming_language)">Joy</a>. I'll try to parse that : <br>
@@ -31,6 +48,14 @@ I've tried several times to write a little language inspired by <a href="https:/
 (and then multiple passes refine the structure of the tree).
 Then i've implemented a function to add nodes to a tree, and another to transform a string into a tree. Tonight i've started writing another to display a node, which is not finished yet. 
 <a href="https://git.sr.ht/~rabbits/beetbug">Beetbug</a> was very useful :) </p>
+</article>
 
+<article>
+<h2> 03/12 </h2>
+<p>Today i've implemented tree displaying (and corrected some bugs). I can now print a tree where the leaves can only be characters. Tomorrow i will maybe add other types like integers, etc. 
+    And i will generate a tree with a more complex structure to see if it displays correctly. I also have to find why there is a #02 remaining on the working stack ate the end of the program... </p>
+</article>
+
+</main>
 </body>
 </html> 
