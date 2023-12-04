@@ -53,7 +53,50 @@ Then i've implemented a function to add nodes to a tree, and another to transfor
 <article>
 <h2> 03/12 </h2>
 <p>Today i've implemented tree displaying (and corrected some bugs). I can now print a tree where the leaves can only be characters. Tomorrow i will maybe add other types like integers, etc. 
-    And i will generate a tree with a more complex structure to see if it displays correctly. I also have to find why there is a #02 remaining on the working stack ate the end of the program... </p>
+    And i will generate a tree with a more complex structure to see if it displays correctly. I also have to find why there is a #02 remaining on the working stack at the end of the program... </p>
+</article>
+
+<article>
+    <h2>04/12</h2>
+    Today I have hard-coded this to create an example tree:
+    <p>
+        <pre>
+        <code>
+#0000 .type/LIST #0000 ;tree1 add-node
+#00 LIT "a .type/CHARACTER #0000 ;tree1 add-node
+#00 LIT "b .type/CHARACTER #0000 ;tree1 add-node
+#00 LIT "c .type/CHARACTER #0000 ;tree1 add-node
+#0000 .type/LIST #0000 ;tree1 add-node
+#00 LIT "d .type/CHARACTER #0004 ;tree1 add-node
+#00 LIT "e .type/CHARACTER #0004 ;tree1 add-node
+#00 LIT "f .type/CHARACTER #0004 ;tree1 add-node
+#04d2 .type/INTEGER #0004 ;tree1 add-node
+#162e .type/INTEGER #0000 ;tree1 add-node
+;tree1 print-tree
+        </code>
+        </pre>
+        <p>The prototype of the add-node function is this :</p>
+        <code>@add-node ( data* type parent* tree* -: )</code>
+        
+        <p>And the output of print-tree is this :</p>
+        <pre>
+        
+        <code>
+00010 nodes
+LIST
+    a
+    b
+    c
+    LIST
+        d
+        e
+        f
+        01234
+    05678
+        </code>
+        </pre>
+        It took me quite some time because i've found some bugs in the code.
+    </p>
 </article>
 
 </main>
