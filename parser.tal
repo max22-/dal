@@ -11,18 +11,20 @@
 |00 @type &LIST $1 &CHARACTER $1 &LEFT_BRACKET $1 &RIGHT_BRACKET $1 &INTEGER $1 &WORD $1
 |00 @tree &node-count $2 &nodes
 
-|0100
+|0100 ( -> )
 
-    .type/LIST #0000 ;tree1 add-node
+    #0000 .type/LIST #0000 ;tree1 add-node
     #00 LIT "a .type/CHARACTER #0000 ;tree1 add-node
     #00 LIT "b .type/CHARACTER #0000 ;tree1 add-node
     #00 LIT "c .type/CHARACTER #0000 ;tree1 add-node
-    .type/LIST #0000 ;tree1 add-node
+    #0000 .type/LIST #0000 ;tree1 add-node
     #00 LIT "d .type/CHARACTER #0004 ;tree1 add-node
     #00 LIT "e .type/CHARACTER #0004 ;tree1 add-node
     #00 LIT "f .type/CHARACTER #0004 ;tree1 add-node
+    #04d2 .type/INTEGER #0004 ;tree1 add-node
+    #162e .type/INTEGER #0000 ;tree1 add-node
     ;tree1 print-tree
-    ;tree1 #0007 get-node-depth print-short-decimal #0a18 DEO
+    ;tree1 #0001 get-node-depth print-short-decimal #0a18 DEO
     BREAKPOINT
     BRK
 
@@ -35,7 +37,7 @@
 @string-to-tree ( str* tree* -- )
     STH2k reset-tree
     #0000 .type/LIST #0000 STH2kr add-node
-    &loop LDAk DUP #00 EQU ?&end
+    &loop ( str* -: str* ) LDAk DUP #00 EQU ?&end ( TODO: not balanced because of DUP ? )
     #00 SWP ( transform char into short ) .type/CHARACTER #0000 STH2kr add-node
     INC2 !&loop
     &end
@@ -43,11 +45,11 @@
     POP2r
     JMP2r
 
-@reset-tree ( tree* -- )
+@reset-tree ( tree* -: )
     #0000 SWP2 ;tree/node-count ADD2 STA2
     JMP2r
 
-@add-node ( data* type parent* tree* -- )
+@add-node ( data* type parent* tree* -: )
     STH2k
     DUP2 get-node-count get-node
     ( data* type parent* node-address -- )
@@ -61,27 +63,28 @@
     STH2kr get-node-count INC2 STH2r ;tree/node-count ADD2 STA2
     JMP2r
 
-@get-node ( tree* node-id* -- node-address* )
+@get-node ( tree* node-id* -: node-address* )
     ;node/node-length MUL2 ;tree/nodes ADD2 ADD2
     JMP2r
 
-@get-node-data ( tree* node-id* -- node-data* )
+@get-node-data ( tree* node-id* -: node-data* )
     get-node ;node/data ADD2 LDA2
     JMP2r
 
-@get-node-type ( tree* node-id* -- node-type )
+@get-node-type ( tree* node-id* -: node-type )
     get-node ;node/type ADD2 LDA
     JMP2r
 
-@get-node-parent ( tree* node-id* -- node-parent* )
-    get-node ;node/data ADD2 LDA2
+@get-node-parent ( tree* node-id* -: node-parent* )
+    get-node ;node/parent ADD2 LDA2
     JMP2r
 
-@get-node-count ( tree* -- node-count* )
+@get-node-count ( tree* -: node-count* )
     ;tree/node-count ADD2 LDA2
     JMP2r
 
 @get-node-depth ( *tree *node-id -- depth* )
+    ( BREAKPOINT )
     SWP2 ,&tree STR2
     #0000 ,&counter STR2
     
@@ -90,7 +93,7 @@
     DUP2 LIT2 &tree $2 SWP2 get-node-parent
     ( old-node-id* node-id* -- )
     DUP2 ROT2 EQU2 ?&end
-    ,&counter LDR2 INC2 ,&counter STR2
+    ,&counter LDR2 INC2 ,&counter STR2 !&loop
     &end
     POP2
     ,&counter LDR2
@@ -133,13 +136,18 @@
 
     DUP .type/LIST NEQ ?&not-list 
     ;list-str print-string
-    !&end JMP
+    !&end
     &not-list
 
     DUP .type/CHARACTER NEQ ?&not-char
     STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
     get-node-data SWP POP .Console/write DEO
     &not-char
+
+    DUP .type/INTEGER NEQ ?&not-integer
+    STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
+    get-node-data print-short-decimal
+    &not-integer
 
     &end
     POP ( pop node type )
