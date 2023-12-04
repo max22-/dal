@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# A little bit overkill, or useless :)
+# TODO: rewrite it in uxntal
+
 import sys
 
 if len(sys.argv) != 2:
