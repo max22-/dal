@@ -13,9 +13,23 @@
 
 |0100
 
+    .type/LIST #0000 ;tree1 add-node
+    #00 LIT "a .type/CHARACTER #0000 ;tree1 add-node
+    #00 LIT "b .type/CHARACTER #0000 ;tree1 add-node
+    #00 LIT "c .type/CHARACTER #0000 ;tree1 add-node
+    .type/LIST #0000 ;tree1 add-node
+    #00 LIT "d .type/CHARACTER #0004 ;tree1 add-node
+    #00 LIT "e .type/CHARACTER #0004 ;tree1 add-node
+    #00 LIT "f .type/CHARACTER #0004 ;tree1 add-node
+    ;tree1 print-tree
+    ;tree1 #0007 get-node-depth print-short-decimal #0a18 DEO
+    BREAKPOINT
+    BRK
+
     ;program print-string
     ;program ;tree1 string-to-tree
     ;tree1 print-tree
+    BREAKPOINT
     BRK
 
 @string-to-tree ( str* tree* -- )
