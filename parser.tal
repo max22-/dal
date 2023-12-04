@@ -1,12 +1,5 @@
 ( Macros )
 %BREAKPOINT { #01 .System/debug DEO }
-( Types )
-%LIST { #00 }
-%CHARACTER { #01 }
-%LEFT_BRACKET { #02 }
-%RIGHT_BRACKET { #03 }
-%INTEGER { #04 }
-%WORD { #05 }
 
 |00 @System     &vector $2 &wst      $1 &rst    $1 &eaddr  $2 &ecode  $1 &pad     $1 &r       $2 &g      $2 &b     $2 &debug  $1 &halt $1
 |10 @Console    &vector $2 &read     $1 &pad    $5 &write  $1 &error  $1
@@ -15,6 +8,7 @@
 %MAX_TREE_SIZE { $1400 } ( -- 1024 nodes of 5 bytes each )
 
 |00 @node &data $2 &type $1 &parent $2 &node-length
+|00 @type &LIST $1 &CHARACTER $1 &LEFT_BRACKET $1 &RIGHT_BRACKET $1 &INTEGER $1 &WORD $1
 |00 @tree &node-count $2 &nodes
 
 |0100
@@ -26,9 +20,9 @@
 
 @string-to-tree ( str* tree* -- )
     STH2k reset-tree
-    #0000 LIST #0000 STH2kr add-node
+    #0000 .type/LIST #0000 STH2kr add-node
     &loop LDAk DUP #00 EQU ?&end
-    #00 SWP ( transform char into short ) CHARACTER #0000 STH2kr add-node
+    #00 SWP ( transform char into short ) .type/CHARACTER #0000 STH2kr add-node
     INC2 !&loop
     &end
     POP2
@@ -123,12 +117,12 @@
     STH2 STH2 STH2kr SWP2r STH2kr SWP2r ( make a copy of the arguments on the return stack )
     get-node-type
 
-    DUP LIST NEQ ?&not-list 
+    DUP .type/LIST NEQ ?&not-list 
     ;list-str print-string
     !&end JMP
     &not-list
 
-    DUP CHARACTER NEQ ?&not-char
+    DUP .type/CHARACTER NEQ ?&not-char
     STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
     get-node-data SWP POP .Console/write DEO
     &not-char
