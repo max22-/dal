@@ -1,0 +1,14 @@
+#0000 .type/LIST #0000 ;tree1 add-node
+    #00 LIT "a .type/CHARACTER #0000 ;tree1 add-node
+    #00 LIT "b .type/CHARACTER #0000 ;tree1 add-node
+    #00 LIT "c .type/CHARACTER #0000 ;tree1 add-node
+    #0000 .type/LIST #0000 ;tree1 add-node
+    #00 LIT "d .type/CHARACTER #0004 ;tree1 add-node
+    #00 LIT "e .type/CHARACTER #0004 ;tree1 add-node
+    #00 LIT "f .type/CHARACTER #0004 ;tree1 add-node
+    #04d2 .type/INTEGER #0004 ;tree1 add-node
+    #162e .type/INTEGER #0000 ;tree1 add-node
+    ;tree1 print-tree
+    ;tree1 #0001 get-node-depth print-short-decimal #0a18 DEO
+    BREAKPOINT
+    ( BRK )
