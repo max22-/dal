@@ -26,7 +26,7 @@
     ;tree1 print-tree
     ;tree1 #0001 get-node-depth print-short-decimal #0a18 DEO
     BREAKPOINT
-    BRK
+    ( BRK )
 
     ;program print-string
     ;program ;tree1 string-to-tree
@@ -37,8 +37,8 @@
 @string-to-tree ( str* tree* -- )
     STH2k reset-tree
     #0000 .type/LIST #0000 STH2kr add-node
-    &loop ( str* -: str* ) LDAk DUP #00 EQU ?&end ( TODO: not balanced because of DUP ? )
-    #00 SWP ( transform char into short ) .type/CHARACTER #0000 STH2kr add-node
+    &loop ( str* -: str* ) LDAk #00 EQU ?&end ( TODO: not balanced because of DUP ? )
+    LDAk #00 SWP ( transform char into short ) .type/CHARACTER #0000 STH2kr add-node
     INC2 !&loop
     &end
     POP2
