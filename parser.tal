@@ -6,27 +6,9 @@
 
 
 %MAX_TREE_SIZE { $1400 } ( -- 1024 nodes of 5 bytes each )
-
-|00 @node &data $2 &type $1 &parent $2 &node-length
-|00 @type &LIST $1 &CHARACTER $1 &LEFT_BRACKET $1 &RIGHT_BRACKET $1 &INTEGER $1 &WORD $1
-|00 @tree &node-count $2 &nodes
+~tree-types.tal
 
 |0100 ( -> )
-
-    #0000 .type/LIST #0000 ;tree1 add-node
-    #00 LIT "a .type/CHARACTER #0000 ;tree1 add-node
-    #00 LIT "b .type/CHARACTER #0000 ;tree1 add-node
-    #00 LIT "c .type/CHARACTER #0000 ;tree1 add-node
-    #0000 .type/LIST #0000 ;tree1 add-node
-    #00 LIT "d .type/CHARACTER #0004 ;tree1 add-node
-    #00 LIT "e .type/CHARACTER #0004 ;tree1 add-node
-    #00 LIT "f .type/CHARACTER #0004 ;tree1 add-node
-    #04d2 .type/INTEGER #0004 ;tree1 add-node
-    #162e .type/INTEGER #0000 ;tree1 add-node
-    ;tree1 print-tree
-    ;tree1 #0001 get-node-depth print-short-decimal #0a18 DEO
-    BREAKPOINT
-    ( BRK )
 
     ;program print-string
     ;program ;tree1 string-to-tree
@@ -34,7 +16,12 @@
     BREAKPOINT
     BRK
 
+@lexer ( input-tree output-tree* -- )
+    #0000 ,&count STR2
+    DUP2 reset-tree
 
+    JMP2r
+    &count $2
 
 @program
     "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- 20 "fac 20 "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
