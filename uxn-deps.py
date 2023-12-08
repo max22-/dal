@@ -16,7 +16,7 @@ deps = []
 
 for l in lines:
     if l[0] == "~":
-        deps.append(l[1:])
+        deps.append(l[1:].strip())
 
 deps_file = sys.argv[1][0:-4] + ".d"
 with open(deps_file, "w") as f:
