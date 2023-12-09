@@ -1,7 +1,7 @@
 @string-to-tree ( str* tree* -- )
     STH2k reset-tree
     #0000 .type/LIST #0000 STH2kr add-node
-    &loop ( str* -: str* ) LDAk #00 EQU ?&end ( TODO: not balanced because of DUP ? )
+    &loop ( str* -: str* ) LDAk #00 EQU ?&end
     LDAk #00 SWP ( transform char into short ) .type/CHARACTER #0000 STH2kr add-node
     INC2 !&loop
     &end
