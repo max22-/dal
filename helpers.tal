@@ -22,3 +22,9 @@
 	&third
 	             #30 ADD .Console/write DEO
 	JMP2r
+
+@is-digit ( byte -: boolean )
+	DUP LIT "0 LTH 
+	SWP LIT "9 GTH ORA 
+	#01 SWP SUB
+	JMP2r

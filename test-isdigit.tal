@@ -1,0 +1,13 @@
+|0100
+    LIT "/ is-digit
+    LIT "0 is-digit
+    LIT "5 is-digit
+    LIT "9 is-digit
+    LIT "A is-digit
+    BRK
+
+@is-digit ( byte -: boolean )
+	DUP LIT "0 LTH 
+	SWP LIT "9 GTH ORA 
+	#01 SWP SUB
+	JMP2r

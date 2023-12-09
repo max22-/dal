@@ -1,4 +1,7 @@
 ( Macros )
+%AS-BYTE { SWP POP }
+%AS-SHORT { #00 SWP }
+%NOT { #01 SWP SUB }
 %BREAKPOINT { #01 .System/debug DEO }
 
 |00 @System     &vector $2 &wst      $1 &rst    $1 &eaddr  $2 &ecode  $1 &pad     $1 &r       $2 &g      $2 &b     $2 &debug  $1 &halt $1
@@ -10,23 +13,76 @@
 
 |0100 ( -> )
 
-    ;program print-string
+    ( ;program print-string #0a18 DEO )
     ;program ;tree1 string-to-tree
-    ;tree1 print-tree
-    BREAKPOINT
+    ( ;tree1 print-tree )
+    ;tree1 ;tree2 lexer
+    ;tree2 print-tree
+    ;&goodbye print-string
+    #01 .System/halt DEO
     BRK
+    &goodbye "Goodbye. 0a $1
+    
 
-@lexer ( input-tree output-tree* -- )
-    #0000 ,&count STR2
-    DUP2 reset-tree
+@lexer ( input-tree* output-tree* -- )
+    ;&output-tree STA2
+    ;&input-tree STA2
 
+    ;&output-tree LDA2 reset-tree
+    #0000 .type/LIST #0000 ;&output-tree LDA2 add-node
+
+    #0001 ;&id STA2
+    &loop ;&input-tree LDA2 get-node-count ;&id LDA2 GTH2 NOT ?&end
+
+        ;&input-tree LDA2 ;&id LDA2 get-node-data AS-BYTE
+
+        DUP LIT 20 NEQ ?&not-space
+        !&switch-end
+        &not-space
+
+        DUP LIT "[ NEQ ?&not-left-bracket
+        LIT "[ AS-SHORT .type/LEFT_BRACKET #0000 ;&output-tree LDA2 add-node
+        !&switch-end
+        &not-left-bracket
+
+        DUP LIT "] NEQ ?&not-right-bracket
+        LIT "] AS-SHORT .type/RIGHT_BRACKET #0000 ;&output-tree LDA2 add-node
+        !&switch-end
+        &not-right-bracket
+
+        DUP is-digit NOT ?&not-digit
+        DUP LIT "0 SUB AS-SHORT
+        ( char integer* -- )
+        &digit-loop
+            ( while(id+1 < node_count && id_digit(get_node_data(tree1, id+1))) )
+            ;&id LDA2 INC2 ;&input-tree LDA2 get-node-count LTH2 NOT ?&digit-loop-end
+            ;&input-tree LDA2 ;&id LDA2k INC2 SWP2 STA2k POP2 get-node-data DUP2 ,&digit STR2 AS-BYTE is-digit NOT ?&digit-loop-end
+            #000a MUL LIT &digit $2 LIT "0 AS-SHORT SUB2 ADD2
+            !&digit-loop
+        &digit-loop-end
+        .type/INTEGER #0000 ;&output-tree LDA2 add-node
+        !&switch-end
+        &not-digit
+
+        &switch-end
+        ( BREAKPOINT )
+        POP
+        ( ;&hello print-string )
+
+        ,&id LDR2 INC2 ,&id STR2
+    !&loop
+    &end
     JMP2r
-    &count $2
+    &input-tree $2
+    &output-tree $2
+    &id $2
+    &hello "Hello! 0a $1
 
 @program
     "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- 20 "fac 20 "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
 
 @tree1 MAX_TREE_SIZE
+@tree2 MAX_TREE_SIZE
 
 ~tree.tal
 ~helpers.tal

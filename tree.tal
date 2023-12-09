@@ -106,11 +106,23 @@
     DUP .type/CHARACTER NEQ ?&not-char
     STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
     get-node-data SWP POP .Console/write DEO
+    !&end
     &not-char
+
+    DUP .type/LEFT_BRACKET NEQ ?&not-left-bracket
+    ;&left-bracket-str print-string
+    !&end
+    &not-left-bracket
+
+    DUP .type/RIGHT_BRACKET NEQ ?&not-right-bracket
+    ;&right-bracket-str print-string
+    !&end
+    &not-right-bracket
 
     DUP .type/INTEGER NEQ ?&not-integer
     STH2kr SWP2r STH2kr SWP2r ( get the arguments from the return stack )
     get-node-data print-short-decimal
+    !&end
     &not-integer
 
     &end
@@ -118,3 +130,5 @@
     POP2r POP2r ( pop the stashed tree* and node-number* arguments )
     JMP2r
     &list-str "LIST $1
+    &left-bracket-str "LEFT_BRACKET $1
+    &right-bracket-str "RIGHT_BRACKET $1
