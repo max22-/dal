@@ -28,3 +28,10 @@
 	SWP LIT "9 GTH ORA 
 	#01 SWP SUB
 	JMP2r
+
+@is-word-char ( byte -: boolean )
+	DUP #20 NEQ
+	SWP DUP LIT "[ NEQ
+	SWP LIT "] NEQ
+	AND AND
+	JMP2r

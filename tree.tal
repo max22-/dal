@@ -125,6 +125,18 @@
     !&end
     &not-integer
 
+    DUP .type/WORD NEQ ?&not-word
+    ;&word-str print-string
+    !&end
+    &not-word
+
+    DUP .type/EOF NEQ ?&not-eof
+    ;&eof-str print-string
+    !&end
+    &not-eof
+
+    ;&unknown-str print-string
+
     &end
     POP ( pop node type )
     POP2r POP2r ( pop the stashed tree* and node-number* arguments )
@@ -132,3 +144,6 @@
     &list-str "LIST $1
     &left-bracket-str "LEFT_BRACKET $1
     &right-bracket-str "RIGHT_BRACKET $1
+    &word-str "WORD $1
+    &eof-str "EOF $1
+    &unknown-str "unknown 20 "type 20 "! $1

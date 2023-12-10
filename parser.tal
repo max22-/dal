@@ -13,12 +13,13 @@
 
 |0100 ( -> )
 
-    ( ;program print-string #0a18 DEO )
+    ;program print-string #0a18 DEO
     ;program ;tree1 string-to-tree
     ( ;tree1 print-tree )
     ;tree1 ;tree2 lexer
     ;tree2 print-tree
     ;&goodbye print-string
+    BREAKPOINT
     #01 .System/halt DEO
     BRK
     &goodbye "Goodbye. 0a $1
@@ -36,7 +37,7 @@
 
         ;&input-tree LDA2 ;&id LDA2 get-node-data AS-BYTE
 
-        DUP LIT 20 NEQ ?&not-space
+        DUP #20 NEQ ?&not-space
         !&switch-end
         &not-space
 
@@ -55,28 +56,52 @@
         ( char integer* -- )
         &digit-loop
             ( while(id+1 < node_count && id_digit(get_node_data(tree1, id+1))) )
-            ;&id LDA2 INC2 ;&input-tree LDA2 get-node-count LTH2 NOT ?&digit-loop-end
-            ;&input-tree LDA2 ;&id LDA2k INC2 SWP2 STA2k POP2 get-node-data DUP2 ,&digit STR2 AS-BYTE is-digit NOT ?&digit-loop-end
-            #000a MUL LIT &digit $2 LIT "0 AS-SHORT SUB2 ADD2
+            ;&input-end? JSR2 ?&digit-loop-end
+            ;&get-next-data JSR2 DUP2 ,&digit STR2 AS-BYTE is-digit NOT ?&digit-loop-end
+            #000a MUL2 LIT2 &digit $2 LIT "0 AS-SHORT SUB2 ADD2
+            ;&inc-id JSR2
             !&digit-loop
         &digit-loop-end
         .type/INTEGER #0000 ;&output-tree LDA2 add-node
         !&switch-end
         &not-digit
 
-        &switch-end
-        ( BREAKPOINT )
-        POP
-        ( ;&hello print-string )
+        DUP
+        ;&output-tree LDA2 get-node-count ,&parent STR2
+        #0000 .type/WORD #0000 ;&output-tree LDA2 add-node
+        &word-loop ( first-character character -- )
+            AS-SHORT .type/CHARACTER LIT2 &parent $2 ;&output-tree LDA2 add-node
+            ( first-character -- )
+            ;&input-end? JSR2 ?&word-loop-end
+            ;&get-next-data JSR2 AS-BYTE DUP ,&char STR is-word-char NOT ?&word-loop-end
+            LIT &char $1
+            ;&inc-id JSR2
+            !&word-loop
+        &word-loop-end
 
+
+        &switch-end
+        POP
         ,&id LDR2 INC2 ,&id STR2
     !&loop
     &end
+    #0000 .type/EOF #0000 ;&output-tree LDA2 add-node
     JMP2r
+
+    &input-end?
+        ;&id LDA2 INC2 ;&input-tree LDA2 get-node-count LTH2 NOT
+        JMP2r
+    &get-next-data
+        ;&input-tree LDA2 ;&id LDA2 INC2 get-node-data
+        JMP2r
+
+    &inc-id
+        ,&id LDR2 INC2 ,&id STR2
+        JMP2r
+
     &input-tree $2
     &output-tree $2
     &id $2
-    &hello "Hello! 0a $1
 
 @program
     "[dup 20 "0 20 "= 20 "[1 20 "drop] 20 "[dup 20 "1 20 "- 20 "fac 20 "*] 20 "ifte] 20 "' 20 "fac 20 "def $1
