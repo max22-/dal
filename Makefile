@@ -13,6 +13,6 @@ run: parser.rom
 	uxncli parser.rom
 
 clean:
-	rm -f parser.rom *.d
+	rm -f *.rom* *.d
 
 -include $(DEPS)
