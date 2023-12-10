@@ -114,6 +114,70 @@ LIST
     <img src="2023-12-09 22-58-15.png"/>
 </article>
 
+<article>
+    <h2>10/12</h2>
+    <p>I've finished the lexer (i've added 'word' lexing), and debugged it. It looks like it works ! Here is the output :</p>
+    <pre>
+        <code>
+[dup 0 = [1 drop] [dup 1 - fac *] ifte] ' fac def
+00049 nodes
+LIST
+    LEFT_BRACKET
+    WORD
+        d
+        u
+        p
+    00000
+    WORD
+        =
+    LEFT_BRACKET
+    00001
+    WORD
+        d
+        r
+        o
+        p
+    RIGHT_BRACKET
+    LEFT_BRACKET
+    WORD
+        d
+        u
+        p
+    00001
+    WORD
+        -
+    WORD
+        f
+        a
+        c
+    WORD
+        *
+    RIGHT_BRACKET
+    WORD
+        i
+        f
+        t
+        e
+    RIGHT_BRACKET
+    WORD
+        '
+    WORD
+        f
+        a
+        c
+    WORD
+        d
+        e
+        f
+    EOF
+Goodbye.
+wst  00  00  00  00 [00] 01  0e  00  02 
+rst  00  00  00  00 [00] 01  28  16  da
+        </code>
+    </pre>
+    Nothing left on the stack, cool !
+</article>
+
 </main>
 </body>
 </html> 
